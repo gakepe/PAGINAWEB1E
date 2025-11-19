@@ -90,7 +90,7 @@
 </head>
 <body>
   <div id="aviso">
-    <b>Bem-vindo ao Gerenciador de Bebidas! 🍷</b> Organize o estoque e as compras.
+    <b>Bem-vindo ao Gerenciador de Bebidas! </b> Organize o estoque e as compras.
   </div>
   
   <div id="container">
@@ -99,14 +99,14 @@
     </div>
 
     <div class="btn-group">
-      <button id="btnAddBebida" class="green-btn">➕ Adicionar</button>
-      <button id="btnExportar">📥 Exportar</button>
-      <button id="btnImportar">📤 Importar</button>
+      <button id="btnAddBebida" class="green-btn"> Adicionar</button>
+      <button id="btnExportar"> Exportar</button>
+      <button id="btnImportar"> Importar</button>
       <input id="importar" type="file" accept=".json" style="display:none">
-      <button id="btnPNG">🖼️ PNG</button>
-      <button id="btnPDF">📄 PDF</button>
-      <button id="btnTotal" class="purple-btn">💰 Total</button>
-      <button id="btnApagarTudo" class="red-btn">🗑️ Apagar</button>
+      <button id="btnPNG"> PNG</button>
+      <button id="btnPDF"> PDF</button>
+      <button id="btnTotal" class="purple-btn"> Total</button>
+      <button id="btnApagarTudo" class="red-btn"> Apagar</button>
     </div>
 
     <div class="btn-group selector-tabview">
@@ -117,7 +117,7 @@
     </div>
 
     <div class="lista-section" id="listaSection">
-      <h3 id="tituloLista">📦 Estoque</h3>
+      <h3 id="tituloLista"> Estoque</h3>
       <table id="tabela">
         <thead id="thead-estoque">
           <tr>
@@ -136,7 +136,7 @@
 
   <!-- POPUP ADICIONAR BEBIDA - ESTOQUE -->
   <div class="popup" id="popup-addEstoque">
-    <h3>➕ Adicionar ao Estoque</h3>
+    <h3> Adicionar ao Estoque</h3>
     <label>Nome da bebida:</label>
     <input type="text" id="nomeEstoque" placeholder="Ex: Coca-Cola 2L">
     
@@ -149,7 +149,7 @@
 
   <!-- POPUP ADICIONAR BEBIDA - COMPRAS -->
   <div class="popup" id="popup-addCompra">
-    <h3>➕ Adicionar para Comprar</h3>
+    <h3> Adicionar para Comprar</h3>
     <label>Nome da bebida:</label>
     <input type="text" id="nomeCompra" placeholder="Ex: Coca-Cola 2L">
     
@@ -167,7 +167,7 @@
 
   <!-- POPUP EDITAR BEBIDA -->
   <div class="popup" id="popup-editarBebida">
-    <h3>✏️ Editar</h3>
+    <h3> Editar</h3>
     <label>Nome da bebida:</label>
     <input type="text" id="editNome" placeholder="Ex: Coca-Cola 2L">
     
@@ -187,7 +187,7 @@
 
   <!-- POPUP JUNTAR BEBIDA -->
   <div class="popup" id="popup-juntarBebida">
-    <h3>🔗 Similar encontrada</h3>
+    <h3> Similar encontrada</h3>
     <p id="msgJuntar" style="color:#64b5f6; margin-bottom:16px; font-size:14px;"></p>
     <button id="btnConfirmarJuntar" class="green-btn" type="button">✓ Juntar</button>
     <button id="btnNaoJuntar" type="button">✗ Adicionar Separado</button>
@@ -195,7 +195,7 @@
 
   <!-- POPUP TOTAL -->
   <div class="popup" id="popup-total">
-    <h3 style="text-align:center;">💰 Total de Compras</h3>
+    <h3 style="text-align:center;"> Total de Compras</h3>
     <div style="background: rgba(76, 175, 80, 0.2); border: 2px solid #4CAF50; border-radius: 8px; padding: 16px; text-align: center; margin-bottom: 16px;">
       <p style="font-size: 14px; color: #aaa; margin: 0 0 8px 0;">Total da lista:</p>
       <p id="valorTotalCompra" style="font-size: 28px; color: #4CAF50; font-weight: 700; margin: 0;">R$ 0,00</p>
@@ -212,7 +212,7 @@
     let bebidaPendenteMover = null;
 
     document.addEventListener("DOMContentLoaded", () => {
-      console.log("🚀 Aplicação iniciada");
+      console.log(" Aplicação iniciada");
       carregarDados();
       desenharTabela();
 
@@ -286,7 +286,7 @@
         totalGeral += bebida.total;
       });
 
-      document.getElementById('valorTotalCompra').textContent = `R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
+      document.getElementById('valorTotalCompra').textContent = R$ ${totalGeral.toFixed(2).replace('.', ',')};
       abrirPopup('total');
     }
 
@@ -294,14 +294,14 @@
       let qtd = parseFloat(document.getElementById('qtdCompra').value) || 0;
       let preco = parseFloat(document.getElementById('precoCompra').value) || 0;
       let total = qtd * preco;
-      document.getElementById('labelTotalCompra').textContent = `Total: R$ ${total.toFixed(2).replace('.', ',')}`;
+      document.getElementById('labelTotalCompra').textContent = Total: R$ ${total.toFixed(2).replace('.', ',')};
     }
 
     function atualizarTotalEdit() {
       let qtd = parseFloat(document.getElementById('editQtd').value) || 0;
       let preco = parseFloat(document.getElementById('editPreco').value) || 0;
       let total = qtd * preco;
-      document.getElementById('editLabelTotal').textContent = `Total: R$ ${total.toFixed(2).replace('.', ',')}`;
+      document.getElementById('editLabelTotal').textContent = Total: R$ ${total.toFixed(2).replace('.', ',')};
     }
 
     // UNDO SYSTEM
@@ -378,7 +378,7 @@
         return;
       }
 
-      salvarAcao(`Adicionar "${nome}" ao estoque`);
+      salvarAcao(Adicionar "${nome}" ao estoque);
 
       bebidas.estoque.push({ nome, qtd });
       console.log("Bebida adicionada ao estoque:", bebidas.estoque);
@@ -406,7 +406,7 @@
         return;
       }
 
-      salvarAcao(`Adicionar "${nome}" para comprar`);
+      salvarAcao(Adicionar "${nome}" para comprar);
 
       bebidas.compra.push({ nome, qtd, preco, total });
       console.log("Bebida adicionada às compras:", bebidas.compra);
@@ -442,7 +442,7 @@
 
       if (!nome) return alert("Nome da bebida é obrigatório!");
 
-      salvarAcao(`Editar "${nome}"`);
+      salvarAcao(Editar "${nome}");
 
       if (bebidaEditandoTipo === 'estoque') {
         bebidas.estoque[bebidaEditandoIndex] = { nome, qtd };
@@ -464,9 +464,9 @@
     function removerBebida(index) {
       let nome = bebidas[abaAtual][index].nome;
 
-      if (!confirm(`Remover "${nome}"?`)) return;
+      if (!confirm(Remover "${nome}"?)) return;
 
-      salvarAcao(`Remover "${nome}"`);
+      salvarAcao(Remover "${nome}");
 
       bebidas[abaAtual].splice(index, 1);
       desenharTabela();
@@ -536,12 +536,12 @@
 
       if (similar !== -1) {
         bebidaPendenteMover = { compraIndex: index, estoqueIndex: similar };
-        let msgSimilar = `Similar: "${bebidas.estoque[similar].nome}"\n\nJuntar "${bebidaCompra.nome}"?`;
+        let msgSimilar = Similar: "${bebidas.estoque[similar].nome}"\n\nJuntar "${bebidaCompra.nome}"?;
         document.getElementById('msgJuntar').textContent = msgSimilar;
         abrirPopup('juntarBebida');
       } else {
-        if (!confirm(`Marcar "${bebidaCompra.nome}" como comprado?`)) return;
-        salvarAcao(`Marcar "${bebidaCompra.nome}" como comprado`);
+        if (!confirm(Marcar "${bebidaCompra.nome}" como comprado?)) return;
+        salvarAcao(Marcar "${bebidaCompra.nome}" como comprado);
         bebidas.estoque.push({ nome: bebidaCompra.nome, qtd: bebidaCompra.qtd });
         bebidas.compra.splice(index, 1);
         desenharTabela();
@@ -555,7 +555,7 @@
       let bebidaCompra = bebidas.compra[compraIdx];
       let bebidaEstoque = bebidas.estoque[estoqueIdx];
 
-      salvarAcao(`Juntar "${bebidaCompra.nome}"`);
+      salvarAcao(Juntar "${bebidaCompra.nome}");
 
       bebidaEstoque.qtd += bebidaCompra.qtd;
       bebidas.compra.splice(compraIdx, 1);
@@ -571,7 +571,7 @@
       let compraIdx = bebidaPendenteMover.compraIndex;
       let bebidaCompra = bebidas.compra[compraIdx];
 
-      salvarAcao(`Marcar "${bebidaCompra.nome}" como comprado`);
+      salvarAcao(Marcar "${bebidaCompra.nome}" como comprado);
 
       bebidas.estoque.push({ nome: bebidaCompra.nome, qtd: bebidaCompra.qtd });
       bebidas.compra.splice(compraIdx, 1);
@@ -591,7 +591,7 @@
       let thead = document.getElementById('thead-estoque');
 
       if (abaAtual === 'estoque') {
-        titulo.textContent = '📦 Estoque';
+        titulo.textContent = ' Estoque';
         thead.innerHTML = `
           <tr>
             <th>Bebida</th>
@@ -600,7 +600,7 @@
           </tr>
         `;
       } else {
-        titulo.textContent = '🛒 Compras';
+        titulo.textContent = ' Compras';
         thead.innerHTML = `
           <tr>
             <th>Bebida</th>
@@ -622,8 +622,8 @@
             <td>${bebida.nome}</td>
             <td>${bebida.qtd}x</td>
             <td style="text-align:center; white-space:nowrap;">
-              <button style="background:linear-gradient(90deg,#2196f3 0%,#64b5f6 100%); color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; font-size:12px; margin:2px; font-weight:600;" onclick="editarBebida(${index})">✏️</button>
-              <button class="trash-btn" onclick="removerBebida(${index})" style="width:28px; height:28px; line-height:28px; font-size:12px; margin:2px; padding:0;">🗑️</button>
+              <button style="background:linear-gradient(90deg,#2196f3 0%,#64b5f6 100%); color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; font-size:12px; margin:2px; font-weight:600;" onclick="editarBebida(${index})"></button>
+              <button class="trash-btn" onclick="removerBebida(${index})" style="width:28px; height:28px; line-height:28px; font-size:12px; margin:2px; padding:0;"></button>
             </td>
           `;
         } else {
@@ -633,9 +633,9 @@
             <td style="text-align:center;">R$ ${bebida.preco.toFixed(2).replace('.', ',')}</td>
             <td style="text-align:center; font-weight:600; color:#4CAF50;">R$ ${bebida.total.toFixed(2).replace('.', ',')}</td>
             <td style="text-align:center; white-space:nowrap;">
-              <button style="background:linear-gradient(90deg,#2196f3 0%,#64b5f6 100%); color:#fff; border:none; padding:6px 8px; border-radius:4px; cursor:pointer; font-size:11px; margin:1px; font-weight:600;" onclick="editarBebida(${index})">✏️</button>
+              <button style="background:linear-gradient(90deg,#2196f3 0%,#64b5f6 100%); color:#fff; border:none; padding:6px 8px; border-radius:4px; cursor:pointer; font-size:11px; margin:1px; font-weight:600;" onclick="editarBebida(${index})"></button>
               <button style="background:linear-gradient(90deg,#4CAF50 0%,#45a049 100%); color:#fff; border:none; padding:6px 8px; border-radius:4px; cursor:pointer; font-size:11px; margin:1px; font-weight:600;" onclick="moverParaEstoque(${index})">✓</button>
-              <button class="trash-btn" onclick="removerBebida(${index})" style="width:28px; height:28px; line-height:28px; font-size:12px; margin:1px; padding:0;">🗑️</button>
+              <button class="trash-btn" onclick="removerBebida(${index})" style="width:28px; height:28px; line-height:28px; font-size:12px; margin:1px; padding:0;"></button>
             </td>
           `;
         }
@@ -674,7 +674,7 @@
       let blob = new Blob([JSON.stringify(bebidas, null, 2)], { type: "application/json" });
       let link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = `bebidas-${new Date().toISOString().split('T')[0]}.json`;
+      link.download = bebidas-${new Date().toISOString().split('T')[0]}.json;
       link.click();
     }
 
@@ -721,10 +721,10 @@
         tbody.innerHTML = '';
         let thead = document.querySelector("#tabela thead");
         let headerHTML = abaAtual === 'estoque' ? 
-          `<th style="text-align:left;">Bebida</th><th style="width:50px;">Qtd</th>` :
-          `<th style="text-align:left;">Bebida</th><th style="width:40px;">Qtd</th>`;
+          <th style="text-align:left;">Bebida</th><th style="width:50px;">Qtd</th> :
+          <th style="text-align:left;">Bebida</th><th style="width:40px;">Qtd</th>;
 
-        thead.innerHTML = `<tr>${headerHTML}</tr>`;
+        thead.innerHTML = <tr>${headerHTML}</tr>;
 
         chunks[idx].forEach((bebida) => {
           let row = document.createElement('tr');
@@ -751,7 +751,7 @@
             let link = document.createElement('a');
             let n = idx + 1;
             let total = chunks.length;
-            link.download = `bebidas-${abaAtual}-${n}de${total}.png`;
+            link.download = bebidas-${abaAtual}-${n}de${total}.png;
             link.href = canvas.toDataURL();
             link.click();
 
@@ -787,7 +787,7 @@
 
       doc.setFont("Arial", "normal");
       doc.setFontSize(9);
-      doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, margin, yPosition);
+      doc.text(Data: ${new Date().toLocaleDateString('pt-BR')}, margin, yPosition);
       yPosition += 8;
 
       doc.setFont("Arial", "bold");
@@ -821,7 +821,7 @@
         yPosition += 5;
       });
 
-      doc.save(`bebidas-${abaAtual}-${new Date().toISOString().split('T')[0]}.pdf`);
+      doc.save(bebidas-${abaAtual}-${new Date().toISOString().split('T')[0]}.pdf);
     }
 
     // APAGAR TUDO
