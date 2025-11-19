@@ -77,7 +77,7 @@
 </head>
 <body>
   <div id="aviso">
-    <b>Bem-vindo ao Gerenciador de Bebidas! </b> Organize o estoque e as compras.
+    <b>Bem-vindo ao Gerenciador de Bebidas! 🍷</b> Organize o estoque e as compras.
   </div>
   
   <div id="container">
@@ -86,14 +86,14 @@
     </div>
 
     <div class="btn-group">
-      <button id="btnAddBebida" class="green-btn"> Adicionar</button>
-      <button id="btnExportar"> Exportar</button>
-      <button id="btnImportar"> Importar</button>
+      <button id="btnAddBebida" class="green-btn">➕ Adicionar</button>
+      <button id="btnExportar">📥 Exportar</button>
+      <button id="btnImportar">📤 Importar</button>
       <input id="importar" type="file" accept=".json" style="display:none">
-      <button id="btnPNG"> PNG</button>
+      <button id="btnPNG">🖼️ PNG</button>
       <!-- PDF button removed as requested -->
-      <button id="btnTotal" class="purple-btn"> Total</button>
-      <button id="btnApagarTudo" class="red-btn"> Apagar</button>
+      <button id="btnTotal" class="purple-btn">💰 Total</button>
+      <button id="btnApagarTudo" class="red-btn">🗑️ Apagar</button>
     </div>
 
     <div class="btn-group selector-tabview">
@@ -104,7 +104,7 @@
     </div>
 
     <div class="lista-section" id="listaSection">
-      <h3 id="tituloLista"> Estoque</h3>
+      <h3 id="tituloLista">📦 Estoque</h3>
       <table id="tabela">
         <thead id="thead-estoque">
           <tr>
@@ -123,7 +123,7 @@
 
   <!-- POPUP ADICIONAR BEBIDA - ESTOQUE -->
   <div class="popup" id="popup-addEstoque">
-    <h3> Adicionar ao Estoque</h3>
+    <h3>➕ Adicionar ao Estoque</h3>
     <label>Nome da bebida:</label>
     <input type="text" id="nomeEstoque" placeholder="Ex: Coca-Cola 2L">
     <label>Quantidade:</label>
@@ -134,7 +134,7 @@
 
   <!-- POPUP ADICIONAR BEBIDA - COMPRAS -->
   <div class="popup" id="popup-addCompra">
-    <h3> Adicionar para Comprar</h3>
+    <h3>➕ Adicionar para Comprar</h3>
     <label>Nome da bebida:</label>
     <input type="text" id="nomeCompra" placeholder="Ex: Coca-Cola 2L">
     <label>Quantidade:</label>
@@ -148,7 +148,7 @@
 
   <!-- POPUP EDITAR BEBIDA -->
   <div class="popup" id="popup-editarBebida">
-    <h3> Editar</h3>
+    <h3>✏️ Editar</h3>
     <label>Nome da bebida:</label>
     <input type="text" id="editNome" placeholder="Ex: Coca-Cola 2L">
     <label id="editLabelQtd">Quantidade:</label>
@@ -164,7 +164,7 @@
 
   <!-- POPUP JUNTAR BEBIDA -->
   <div class="popup" id="popup-juntarBebida">
-    <h3> Similar encontrada</h3>
+    <h3>🔗 Similar encontrada</h3>
     <p id="msgJuntar" style="color:#64b5f6; margin-bottom:16px; font-size:14px;"></p>
     <button id="btnConfirmarJuntar" class="green-btn" type="button">✓ Juntar</button>
     <button id="btnNaoJuntar" type="button">✗ Adicionar Separado</button>
@@ -172,7 +172,7 @@
 
   <!-- POPUP TOTAL -->
   <div class="popup" id="popup-total">
-    <h3 style="text-align:center;"> Total de Compras</h3>
+    <h3 style="text-align:center;">💰 Total de Compras</h3>
     <div style="background: rgba(76, 175, 80, 0.2); border: 2px solid #4CAF50; border-radius: 8px; padding: 16px; text-align: center; margin-bottom: 16px;">
       <p style="font-size: 14px; color: #aaa; margin: 0 0 8px 0;">Total da lista:</p>
       <p id="valorTotalCompra" style="font-size: 28px; color: #4CAF50; font-weight: 700; margin: 0;">R$ 0,00</p>
@@ -265,7 +265,7 @@
       const nome = document.getElementById('nomeEstoque').value.trim();
       const qtd = parseFloat(document.getElementById('qtdEstoque').value) || 1;
       if (!nome) return alert("Nome da bebida é obrigatório!");
-      salvarAcao(Adicionar "${nome}" ao estoque);
+      salvarAcao(`Adicionar "${nome}" ao estoque`);
       bebidas.estoque.push({ nome, qtd });
       desenharTabela(); salvarDados(); fecharPopup();
     }
@@ -276,7 +276,7 @@
       const preco = parseFloat(document.getElementById('precoCompra').value) || 0;
       if (!nome) return alert("Nome da bebida é obrigatório!");
       if (preco <= 0) return alert("Preço deve ser maior que 0!");
-      salvarAcao(Adicionar "${nome}" para comprar);
+      salvarAcao(`Adicionar "${nome}" para comprar`);
       bebidas.compra.push({ nome, qtd, preco, total: qtd * preco });
       desenharTabela(); salvarDados(); fecharPopup();
     }
@@ -284,12 +284,12 @@
     function atualizarTotalCompra(){
       const qtd = parseFloat(document.getElementById('qtdCompra').value) || 0;
       const preco = parseFloat(document.getElementById('precoCompra').value) || 0;
-      document.getElementById('labelTotalCompra').textContent = Total: R$ ${ (qtd*preco).toFixed(2).replace('.',',') };
+      document.getElementById('labelTotalCompra').textContent = `Total: R$ ${ (qtd*preco).toFixed(2).replace('.',',') }`;
     }
     function atualizarTotalEdit(){
       const qtd = parseFloat(document.getElementById('editQtd').value) || 0;
       const preco = parseFloat(document.getElementById('editPreco').value) || 0;
-      document.getElementById('editLabelTotal').textContent = Total: R$ ${ (qtd*preco).toFixed(2).replace('.',',') };
+      document.getElementById('editLabelTotal').textContent = `Total: R$ ${ (qtd*preco).toFixed(2).replace('.',',') }`;
     }
 
     // --- Edit / Remove / Move (use event listeners created dynamically) ---
@@ -313,7 +313,7 @@
       const nome = document.getElementById('editNome').value.trim();
       const qtd = parseFloat(document.getElementById('editQtd').value) || 1;
       if (!nome) return alert("Nome da bebida é obrigatório!");
-      salvarAcao(Editar "${nome}");
+      salvarAcao(`Editar "${nome}"`);
       if (bebidaEditandoTipo === 'estoque') {
         bebidas.estoque[bebidaEditandoIndex] = { nome, qtd };
       } else {
@@ -326,8 +326,8 @@
 
     function removerBebida(index){
       const nome = bebidas[abaAtual][index]?.nome || '';
-      if (!confirm(Remover "${nome}"?)) return;
-      salvarAcao(Remover "${nome}");
+      if (!confirm(`Remover "${nome}"?`)) return;
+      salvarAcao(`Remover "${nome}"`);
       bebidas[abaAtual].splice(index,1);
       desenharTabela(); salvarDados();
     }
@@ -339,12 +339,12 @@
       const similar = bebidas.estoque.findIndex(b => calcularSimilaridade(b.nome, bebidaCompra.nome) > 0.75);
       if (similar !== -1) {
         bebidaPendenteMover = { compraIndex: index, estoqueIndex: similar };
-        document.getElementById('msgJuntar').textContent = Similar: "${bebidas.estoque[similar].nome}"\n\nJuntar "${bebidaCompra.nome}"?;
+        document.getElementById('msgJuntar').textContent = `Similar: "${bebidas.estoque[similar].nome}"\n\nJuntar "${bebidaCompra.nome}"?`;
         abrirPopup('juntarBebida');
         return;
       }
-      if (!confirm(Marcar "${bebidaCompra.nome}" como comprado?)) return;
-      salvarAcao(Marcar "${bebidaCompra.nome}" como comprado);
+      if (!confirm(`Marcar "${bebidaCompra.nome}" como comprado?`)) return;
+      salvarAcao(`Marcar "${bebidaCompra.nome}" como comprado`);
       bebidas.estoque.push({ nome: bebidaCompra.nome, qtd: bebidaCompra.qtd });
       bebidas.compra.splice(index,1);
       desenharTabela(); salvarDados();
@@ -356,7 +356,7 @@
       const compra = bebidas.compra[compraIndex];
       bebidas.estoque[estoqueIndex].qtd += compra.qtd;
       bebidas.compra.splice(compraIndex,1);
-      salvarAcao(Juntar "${compra.nome}");
+      salvarAcao(`Juntar "${compra.nome}"`);
       abaAtual = 'estoque';
       document.getElementById('abaSeletor').value = 'estoque';
       desenharTabela(); salvarDados(); fecharPopup();
@@ -367,7 +367,7 @@
       const compra = bebidas.compra[compraIndex];
       bebidas.estoque.push({ nome: compra.nome, qtd: compra.qtd });
       bebidas.compra.splice(compraIndex,1);
-      salvarAcao(Marcar "${compra.nome}" como comprado);
+      salvarAcao(`Marcar "${compra.nome}" como comprado`);
       abaAtual = 'estoque';
       document.getElementById('abaSeletor').value = 'estoque';
       desenharTabela(); salvarDados(); fecharPopup();
@@ -381,11 +381,11 @@
       const thead = document.getElementById('thead-estoque');
 
       if (abaAtual === 'estoque') {
-        titulo.textContent = ' Estoque';
-        thead.innerHTML = <tr><th>Bebida</th><th style="width:50px;">Qtd</th><th style="width:120px;">Ação</th></tr>;
+        titulo.textContent = '📦 Estoque';
+        thead.innerHTML = `<tr><th>Bebida</th><th style="width:50px;">Qtd</th><th style="width:120px;">Ação</th></tr>`;
       } else {
-        titulo.textContent = ' Compras';
-        thead.innerHTML = <tr><th>Bebida</th><th style="width:40px;">Qtd</th><th style="width:55px;">Preço</th><th style="width:60px;">Total</th><th style="width:120px;">Ação</th></tr>;
+        titulo.textContent = '🛒 Compras';
+        thead.innerHTML = `<tr><th>Bebida</th><th style="width:40px;">Qtd</th><th style="width:55px;">Preço</th><th style="width:60px;">Total</th><th style="width:120px;">Ação</th></tr>`;
       }
 
       tbody.innerHTML = '';
@@ -406,14 +406,14 @@
         if (abaAtual === 'compra') {
           const tdPreco = document.createElement('td');
           tdPreco.style.textAlign = 'center';
-          tdPreco.textContent = (bebida.preco !== undefined) ? R$ ${bebida.preco.toFixed(2).replace('.',',')} : '';
+          tdPreco.textContent = (bebida.preco !== undefined) ? `R$ ${bebida.preco.toFixed(2).replace('.',',')}` : '';
           tr.appendChild(tdPreco);
 
           const tdTotal = document.createElement('td');
           tdTotal.style.textAlign = 'center';
           tdTotal.style.fontWeight = '600';
           tdTotal.style.color = '#4CAF50';
-          tdTotal.textContent = (bebida.total !== undefined) ? R$ ${bebida.total.toFixed(2).replace('.',',')} : '';
+          tdTotal.textContent = (bebida.total !== undefined) ? `R$ ${bebida.total.toFixed(2).replace('.',',')}` : '';
           tr.appendChild(tdTotal);
         }
 
@@ -424,7 +424,7 @@
 
         // edit button
         const btnEdit = document.createElement('button');
-        btnEdit.textContent = '';
+        btnEdit.textContent = '✏️';
         btnEdit.style.cssText = 'background:linear-gradient(90deg,#2196f3 0%,#64b5f6 100%); color:#fff; border:none; padding:6px 8px; border-radius:4px; cursor:pointer; font-size:12px; margin:2px; font-weight:600;';
         btnEdit.addEventListener('click', () => editarBebida(index));
         tdAcoes.appendChild(btnEdit);
@@ -442,7 +442,7 @@
         const btnTrash = document.createElement('button');
         btnTrash.className = 'trash-btn';
         btnTrash.title = 'Remover';
-        btnTrash.textContent = '';
+        btnTrash.textContent = '🗑️';
         btnTrash.style.margin = '2px';
         btnTrash.addEventListener('click', () => removerBebida(index));
         tdAcoes.appendChild(btnTrash);
@@ -458,7 +458,7 @@
       const blob = new Blob([JSON.stringify(bebidas, null, 2)], { type: "application/json" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = bebidas-${new Date().toISOString().split('T')[0]}.json;
+      link.download = `bebidas-${new Date().toISOString().split('T')[0]}.json`;
       link.click();
     }
 
@@ -495,16 +495,16 @@
       for (let idx = 0; idx < chunks.length; idx++) {
         // render chunk in table
         const headerHTML = (abaAtual === 'estoque')
-          ? <tr><th>Bebida</th><th style="width:50px;">Qtd</th></tr>
-          : <tr><th>Bebida</th><th style="width:40px;">Qtd</th><th style="width:55px;">Preço</th><th style="width:60px;">Total</th></tr>;
+          ? `<tr><th>Bebida</th><th style="width:50px;">Qtd</th></tr>`
+          : `<tr><th>Bebida</th><th style="width:40px;">Qtd</th><th style="width:55px;">Preço</th><th style="width:60px;">Total</th></tr>`;
         document.querySelector("#tabela thead").innerHTML = headerHTML;
         tbody.innerHTML = '';
         chunks[idx].forEach(bebida => {
           const tr = document.createElement('tr');
           if (abaAtual === 'estoque') {
-            tr.innerHTML = <td>${bebida.nome}</td><td>${bebida.qtd}x</td>;
+            tr.innerHTML = `<td>${bebida.nome}</td><td>${bebida.qtd}x</td>`;
           } else {
-            tr.innerHTML = <td>${bebida.nome}</td><td>${bebida.qtd}x</td><td>${(bebida.preco||0).toFixed(2).replace('.',',')}</td><td>${(bebida.total||0).toFixed(2).replace('.',',')}</td>;
+            tr.innerHTML = `<td>${bebida.nome}</td><td>${bebida.qtd}x</td><td>${(bebida.preco||0).toFixed(2).replace('.',',')}</td><td>${(bebida.total||0).toFixed(2).replace('.',',')}</td>`;
           }
           tbody.appendChild(tr);
         });
@@ -515,7 +515,7 @@
         try {
           const canvas = await html2canvas(document.getElementById('tabela'), { scale: 3, backgroundColor: '#1e1e1e', useCORS: true });
           const link = document.createElement('a');
-          link.download = bebidas-${abaAtual}-${idx+1}de${chunks.length}.png;
+          link.download = `bebidas-${abaAtual}-${idx+1}de${chunks.length}.png`;
           link.href = canvas.toDataURL();
           link.click();
         } catch (err) {
@@ -534,7 +534,7 @@
     function mostrarTotal(){
       if (abaAtual === 'estoque') { alert("Total disponível apenas para a lista de compras!"); return; }
       const totalGeral = bebidas.compra.reduce((s,b) => s + (b.total||0), 0);
-      document.getElementById('valorTotalCompra').textContent = R$ ${totalGeral.toFixed(2).replace('.',',')};
+      document.getElementById('valorTotalCompra').textContent = `R$ ${totalGeral.toFixed(2).replace('.',',')}`;
       abrirPopup('total');
     }
 
