@@ -1,40 +1,840 @@
+<!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-        rel="stylesheet">
-    <title>GabrielFlix</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Gerenciador de Bebidas</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { width: 100%; overflow-x: hidden; margin: 0; padding: 0; }
+    
+    body { font-family: Arial,sans-serif; background:linear-gradient(135deg,#182848 0%,#2980b9 100%); color:#f0f0f0; margin:0; padding:0; }
+    
+    #btnUndo { position:fixed; top:20px; left:50%; transform:translateX(-50%); z-index:2999; background:linear-gradient(90deg,#4CAF50 0%,#45a049 100%); color:#fff; padding:10px 20px; font-size:14px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 2px 12px #0005; font-weight:700; transition:background .2s,transform .1s; }
+    #btnUndo:hover:not(:disabled) { background:linear-gradient(90deg,#388E3C 0%,#2E7D32 100%); transform:translateX(-50%) scale(1.04); }
+    #btnUndo:disabled { background:#ccc; cursor:not-allowed; opacity:0.5; }
+    
+    #espacoVazio { height:1600px; width:100%; }
+    #container { width:100%; max-width:100%; margin:20px 0; background:rgba(30,30,30,0.92); border-radius: 12px; box-shadow:0 2px 20px #0005; padding: 14px; }
+    h2 { text-align:center; color:#64b5f6; margin-top:0; margin-bottom:14px; }
+    .lista-section { width:100%; background:rgba(0,0,0,0.3); border-radius:10px; padding:12px; min-height:350px; }
+    .lista-section h3 { color:#64b5f6; border-bottom:2px solid #64b5f6; padding-bottom:8px; font-size:18px; margin-top:0; margin-bottom:10px; }
+    table { width:100%; border-collapse:collapse; background:#1e1e1e; margin-top:8px; font-size:13px;}
+    th,td { border:1px solid #333; padding:8px; text-align:left; color:#f0f0f0; word-wrap: break-word; overflow-wrap: break-word;}
+    th { background:#2980b9; color:#fff; font-weight:bold; font-size:13px;}
+    input, select, textarea { width:100%; padding:10px; font-size:16px; margin-bottom:8px; border:2px solid #64b5f6; border-radius:4px; background:#121212; color:white; box-sizing:border-box; }
+    input:focus, select:focus, textarea:focus { border-color:#2980b9; outline:none;}
+    button { background: linear-gradient(90deg,#2196f3 0%,#64b5f6 100%); color:#fff; padding:11px 16px; font-size:14px; border:none; border-radius:6px; cursor:pointer; margin-bottom:8px; font-weight:600; transition:background .2s,transform .1s; }
+    button:hover { background:linear-gradient(90deg,#1976d2 0%,#2980b9 100%);}
+    .btn-group { text-align:center; margin-bottom:12px; display:flex; gap:6px; flex-wrap:wrap; justify-content:center; width:100%; }
+    .btn-group button { margin:0; flex:1; min-width:90px; padding:11px 12px; font-size:13px; }
+    .btn-group select { padding:10px 10px; font-size:14px; margin:0; flex:1; min-width:90px; }
+    
+    .popup {
+      position:fixed;
+      left:50%;
+      top:50%;
+      transform:translate(-50%, -50%);
+      width:90vw;
+      max-width:500px;
+      background:#232a34;
+      padding:20px;
+      border-radius: 12px;
+      box-shadow:0 2px 30px #0008;
+      z-index:3001;
+      display:none;
+      max-height:80vh;
+      overflow-y:auto;
+      box-sizing: border-box;
+    }
+    
+    .popup h3 { color:#64b5f6; margin-top:0; margin-bottom:16px; font-size:18px; }
+    .popup label { color: #fff; font-weight: 600; display: block; margin-bottom: 6px; font-size:13px;}
+    .popup input, .popup select { margin-bottom:14px; font-size:16px; padding:12px;}
+    .popup button { margin-right:0; margin-bottom:8px; width:100%; font-size:15px; padding:14px;}
+    
+    #overlay { position:fixed;top:0;left:0;width:100vw;height:100vh;background:#0008;display:none;z-index:3000; }
+    #aviso {width:100%; margin:16px 0 0 0; padding:12px 16px; background:rgba(30,30,30,0.96); border-radius:10px; text-align:center; font-size:13px; box-shadow:0 2px 10px #0003;}
+    .red-btn { background: linear-gradient(135deg,#d32f2f 0%,#b71c1c 100%) !important; color: #fff !important; border: none; }
+    .red-btn:hover { background: linear-gradient(135deg,#c62828 0%,#b71c1c 100%) !important;}
+    .green-btn { background: linear-gradient(135deg,#4CAF50 0%,#45a049 100%) !important; color: #fff !important; border: none; }
+    .green-btn:hover { background: linear-gradient(135deg,#388E3C 0%,#2E7D32 100%) !important;}
+    .purple-btn { background: linear-gradient(135deg,#9b27b0 0%,#af40bf 100%) !important; color: #fff !important; border: none; }
+    .purple-btn:hover { background: linear-gradient(135deg,#7a1884 0%,#922a9e 100%) !important;}
+    .trash-btn {
+      background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%) !important;
+      color: #fff !important;
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      font-size: 14px;
+      padding: 0;
+      cursor:pointer;
+      line-height: 32px;
+      text-align:center;
+      vertical-align: middle;
+    }
+    .trash-btn:hover {
+      background: linear-gradient(135deg, #b71c1c 0%, #7d0909 100%) !important;
+    }
+    .selector-tabview { display:flex; gap:6px; width:100%; }
+    .selector-tabview select { flex:1; padding:10px 10px; font-size:14px; }
+
+    @media (max-width:768px){
+      .popup { width: 95vw; max-width: 95vw; }
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
-
 <body>
-    <header>GabrielFlix</header>
+  <div id="aviso">
+    <b>Bem-vindo ao Gerenciador de Bebidas! 🍷</b> Organize o estoque e as compras.
+  </div>
+  
+  <div id="container">
+    <div style="margin-bottom:10px;">
+      <button id="btnUndo" disabled>↶ Desfazer (Ctrl+Z)</button>
+    </div>
 
-    <section class="chamada">
-        <div class="chamada-texto">
-            <h1>One Piece Red</h1>
-            <p>#onepiece #piratas #anime</p>
-        </div>
+    <div class="btn-group">
+      <button id="btnAddBebida" class="green-btn">➕ Adicionar</button>
+      <button id="btnExportar">📥 Exportar</button>
+      <button id="btnImportar">📤 Importar</button>
+      <input id="importar" type="file" accept=".json" style="display:none">
+      <button id="btnPNG">🖼️ PNG</button>
+      <button id="btnPDF">📄 PDF</button>
+      <button id="btnTotal" class="purple-btn">💰 Total</button>
+      <button id="btnApagarTudo" class="red-btn">🗑️ Apagar</button>
+    </div>
 
-        <div>
-           <iframe width="560" height="315" src="https://www.youtube.com/embed/JvqcaQJgr-A?si=Pts8pm_HC3KQDPwp" 
-               title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; 
-               web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        </div>
-    </section>
+    <div class="btn-group selector-tabview">
+      <select id="abaSeletor">
+        <option value="estoque">Estoque</option>
+        <option value="compra">Compras</option>
+      </select>
+    </div>
 
-    <section class="categoria">
-        <h2>Filmes e séries</h2>
-        <div class="categoria-videos">
-            <a href="https://www.youtube.com/watch?v=cs15QqG6Gjc">
-                <img src="https://img.youtube.com/vi/cs15QqG6Gjc/maxresdefault.jpg" />
-            </a>
-        </div>
-    </section>
+    <div class="lista-section" id="listaSection">
+      <h3 id="tituloLista">📦 Estoque</h3>
+      <table id="tabela">
+        <thead id="thead-estoque">
+          <tr>
+            <th>Bebida</th>
+            <th style="width:50px;">Qtd</th>
+            <th style="width:80px;">Ação</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  
+  <div id="espacoVazio"></div>
+  <div id="overlay"></div>
 
+  <!-- POPUP ADICIONAR BEBIDA - ESTOQUE -->
+  <div class="popup" id="popup-addEstoque">
+    <h3>➕ Adicionar ao Estoque</h3>
+    <label>Nome da bebida:</label>
+    <input type="text" id="nomeEstoque" placeholder="Ex: Coca-Cola 2L">
+    
+    <label>Quantidade:</label>
+    <input type="number" id="qtdEstoque" placeholder="Ex: 10" value="1" min="1">
+    
+    <button id="popupAddEstoqueBtn" class="green-btn" type="button">Adicionar</button>
+    <button class="popupCancelBtn" type="button">Cancelar</button>
+  </div>
+
+  <!-- POPUP ADICIONAR BEBIDA - COMPRAS -->
+  <div class="popup" id="popup-addCompra">
+    <h3>➕ Adicionar para Comprar</h3>
+    <label>Nome da bebida:</label>
+    <input type="text" id="nomeCompra" placeholder="Ex: Coca-Cola 2L">
+    
+    <label>Quantidade:</label>
+    <input type="number" id="qtdCompra" placeholder="Ex: 50" value="1" min="1" step="0.01">
+    
+    <label>Preço (R$):</label>
+    <input type="number" id="precoCompra" placeholder="Ex: 1.50" step="0.01" min="0">
+    
+    <label id="labelTotalCompra" style="color: #4CAF50; font-size: 14px;">Total: R$ 0,00</label>
+    
+    <button id="popupAddCompraBtn" class="green-btn" type="button">Adicionar</button>
+    <button class="popupCancelBtn" type="button">Cancelar</button>
+  </div>
+
+  <!-- POPUP EDITAR BEBIDA -->
+  <div class="popup" id="popup-editarBebida">
+    <h3>✏️ Editar</h3>
+    <label>Nome da bebida:</label>
+    <input type="text" id="editNome" placeholder="Ex: Coca-Cola 2L">
+    
+    <label id="editLabelQtd">Quantidade:</label>
+    <input type="number" id="editQtd" placeholder="Ex: 10" value="1" min="1" step="0.01">
+    
+    <div id="editDadosExtra" style="display:none;">
+      <label>Preço (R$):</label>
+      <input type="number" id="editPreco" placeholder="Ex: 1.50" step="0.01" min="0">
+      
+      <label id="editLabelTotal" style="color: #4CAF50; font-size: 14px;">Total: R$ 0,00</label>
+    </div>
+    
+    <button id="popupEditarBebidaBtn" class="green-btn" type="button">Salvar</button>
+    <button class="popupCancelBtn" type="button">Cancelar</button>
+  </div>
+
+  <!-- POPUP JUNTAR BEBIDA -->
+  <div class="popup" id="popup-juntarBebida">
+    <h3>🔗 Similar encontrada</h3>
+    <p id="msgJuntar" style="color:#64b5f6; margin-bottom:16px; font-size:14px;"></p>
+    <button id="btnConfirmarJuntar" class="green-btn" type="button">✓ Juntar</button>
+    <button id="btnNaoJuntar" type="button">✗ Adicionar Separado</button>
+  </div>
+
+  <!-- POPUP TOTAL -->
+  <div class="popup" id="popup-total">
+    <h3 style="text-align:center;">💰 Total de Compras</h3>
+    <div style="background: rgba(76, 175, 80, 0.2); border: 2px solid #4CAF50; border-radius: 8px; padding: 16px; text-align: center; margin-bottom: 16px;">
+      <p style="font-size: 14px; color: #aaa; margin: 0 0 8px 0;">Total da lista:</p>
+      <p id="valorTotalCompra" style="font-size: 28px; color: #4CAF50; font-weight: 700; margin: 0;">R$ 0,00</p>
+    </div>
+    <button class="popupCancelBtn" type="button">Fechar</button>
+  </div>
+
+  <script>
+    let bebidas = { estoque: [], compra: [] };
+    let historicoAcoes = [];
+    let abaAtual = 'estoque';
+    let bebidaEditandoIndex = -1;
+    let bebidaEditandoTipo = '';
+    let bebidaPendenteMover = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      console.log("🚀 Aplicação iniciada");
+      carregarDados();
+      desenharTabela();
+
+      // Evento para cancelar popup
+      document.querySelectorAll('.popupCancelBtn').forEach(btn => {
+        btn.addEventListener('click', fecharPopup);
+      });
+
+      // Undo
+      document.getElementById("btnUndo").addEventListener('click', desfazer);
+      document.addEventListener("keydown", (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === "z") {
+          e.preventDefault();
+          desfazer();
+        }
+      });
+
+      // Aba
+      document.getElementById("abaSeletor").addEventListener('change', trocarAba);
+      
+      // Adicionar bebida
+      document.getElementById("btnAddBebida").addEventListener('click', () => {
+        console.log("Clicou em adicionar, aba atual:", abaAtual);
+        if (abaAtual === 'estoque') {
+          abrirPopup('addEstoque');
+        } else {
+          abrirPopup('addCompra');
+        }
+      });
+      
+      // Botões de adicionar
+      document.getElementById("popupAddEstoqueBtn").addEventListener('click', addEstoque);
+      document.getElementById("popupAddCompraBtn").addEventListener('click', addCompra);
+      document.getElementById("popupEditarBebidaBtn").addEventListener('click', salvarEdicaoBebida);
+
+      // Juntar
+      document.getElementById("btnConfirmarJuntar").addEventListener('click', confirmarJuntar);
+      document.getElementById("btnNaoJuntar").addEventListener('click', naoJuntar);
+
+      // Total
+      document.getElementById("btnTotal").addEventListener('click', mostrarTotal);
+
+      // Exportar/Importar
+      document.getElementById("btnExportar").addEventListener('click', exportarDados);
+      document.getElementById("btnImportar").addEventListener('click', () => document.getElementById('importar').click());
+      document.getElementById("importar").addEventListener('change', importarDados);
+      document.getElementById("btnPNG").addEventListener('click', exportarPNG);
+      document.getElementById("btnPDF").addEventListener('click', exportarPDF);
+      document.getElementById("btnApagarTudo").addEventListener('click', apagarTudo);
+
+      // Calcular total
+      document.getElementById("qtdCompra").addEventListener('input', atualizarTotalCompra);
+      document.getElementById("precoCompra").addEventListener('input', atualizarTotalCompra);
+      
+      document.getElementById("editQtd").addEventListener('input', atualizarTotalEdit);
+      document.getElementById("editPreco").addEventListener('input', atualizarTotalEdit);
+
+      // Overlay
+      document.getElementById('overlay').addEventListener('click', fecharPopup);
+    });
+
+    // MOSTRAR TOTAL
+    function mostrarTotal() {
+      if (abaAtual === 'estoque') {
+        alert("Total disponível apenas para a lista de compras!");
+        return;
+      }
+
+      let totalGeral = 0;
+      bebidas.compra.forEach(bebida => {
+        totalGeral += bebida.total;
+      });
+
+      document.getElementById('valorTotalCompra').textContent = `R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
+      abrirPopup('total');
+    }
+
+    function atualizarTotalCompra() {
+      let qtd = parseFloat(document.getElementById('qtdCompra').value) || 0;
+      let preco = parseFloat(document.getElementById('precoCompra').value) || 0;
+      let total = qtd * preco;
+      document.getElementById('labelTotalCompra').textContent = `Total: R$ ${total.toFixed(2).replace('.', ',')}`;
+    }
+
+    function atualizarTotalEdit() {
+      let qtd = parseFloat(document.getElementById('editQtd').value) || 0;
+      let preco = parseFloat(document.getElementById('editPreco').value) || 0;
+      let total = qtd * preco;
+      document.getElementById('editLabelTotal').textContent = `Total: R$ ${total.toFixed(2).replace('.', ',')}`;
+    }
+
+    // UNDO SYSTEM
+    function salvarAcao(descricao) {
+      historicoAcoes.push({
+        descricao: descricao,
+        estado: JSON.parse(JSON.stringify(bebidas))
+      });
+      atualizarBtnUndo();
+    }
+
+    function desfazer() {
+      if (historicoAcoes.length === 0) {
+        alert("Nenhuma ação para desfazer!");
+        return;
+      }
+
+      bebidas = historicoAcoes.pop();
+      desenharTabela();
+      salvarDados();
+      atualizarBtnUndo();
+    }
+
+    function atualizarBtnUndo() {
+      document.getElementById("btnUndo").disabled = historicoAcoes.length === 0;
+    }
+
+    // TROCAR ABA
+    function trocarAba() {
+      abaAtual = document.getElementById('abaSeletor').value;
+      console.log("Trocou aba para:", abaAtual);
+      desenharTabela();
+    }
+
+    // POPUPS
+    function abrirPopup(tipo) {
+      console.log("Abrindo popup:", tipo);
+      document.getElementById('overlay').style.display = 'block';
+      document.querySelectorAll('.popup').forEach(p => p.style.display = 'none');
+      let popup = document.getElementById('popup-' + tipo);
+      if (popup) popup.style.display = 'block';
+
+      if (tipo === 'addEstoque') {
+        document.getElementById('nomeEstoque').value = '';
+        document.getElementById('qtdEstoque').value = '1';
+        setTimeout(() => document.getElementById('nomeEstoque').focus(), 100);
+      }
+
+      if (tipo === 'addCompra') {
+        document.getElementById('nomeCompra').value = '';
+        document.getElementById('qtdCompra').value = '1';
+        document.getElementById('precoCompra').value = '';
+        atualizarTotalCompra();
+        setTimeout(() => document.getElementById('nomeCompra').focus(), 100);
+      }
+    }
+
+    function fecharPopup() {
+      console.log("Fechando popup");
+      document.getElementById('overlay').style.display = 'none';
+      document.querySelectorAll('.popup').forEach(p => p.style.display = 'none');
+    }
+
+    // ADICIONAR ESTOQUE
+    function addEstoque() {
+      console.log("addEstoque chamado");
+      let nome = document.getElementById('nomeEstoque').value.trim();
+      let qtd = parseFloat(document.getElementById('qtdEstoque').value) || 1;
+
+      console.log("Dados estoque:", {nome, qtd});
+
+      if (!nome) {
+        alert("Nome da bebida é obrigatório!");
+        return;
+      }
+
+      salvarAcao(`Adicionar "${nome}" ao estoque`);
+
+      bebidas.estoque.push({ nome, qtd });
+      console.log("Bebida adicionada ao estoque:", bebidas.estoque);
+      desenharTabela();
+      salvarDados();
+      fecharPopup();
+    }
+
+    // ADICIONAR COMPRA
+    function addCompra() {
+      console.log("addCompra chamado");
+      let nome = document.getElementById('nomeCompra').value.trim();
+      let qtd = parseFloat(document.getElementById('qtdCompra').value) || 1;
+      let preco = parseFloat(document.getElementById('precoCompra').value) || 0;
+      let total = qtd * preco;
+
+      console.log("Dados compra:", {nome, qtd, preco, total});
+
+      if (!nome) {
+        alert("Nome da bebida é obrigatório!");
+        return;
+      }
+      if (preco <= 0) {
+        alert("Preço deve ser maior que 0!");
+        return;
+      }
+
+      salvarAcao(`Adicionar "${nome}" para comprar`);
+
+      bebidas.compra.push({ nome, qtd, preco, total });
+      console.log("Bebida adicionada às compras:", bebidas.compra);
+      desenharTabela();
+      salvarDados();
+      fecharPopup();
+    }
+
+    // EDITAR BEBIDA
+    function editarBebida(index) {
+      bebidaEditandoTipo = abaAtual;
+      bebidaEditandoIndex = index;
+
+      let bebida = bebidas[abaAtual][index];
+
+      document.getElementById('editNome').value = bebida.nome;
+      document.getElementById('editQtd').value = bebida.qtd;
+
+      if (abaAtual === 'compra') {
+        document.getElementById('editDadosExtra').style.display = 'block';
+        document.getElementById('editPreco').value = bebida.preco || '';
+        atualizarTotalEdit();
+      } else {
+        document.getElementById('editDadosExtra').style.display = 'none';
+      }
+
+      abrirPopup('editarBebida');
+    }
+
+    function salvarEdicaoBebida() {
+      let nome = document.getElementById('editNome').value.trim();
+      let qtd = parseFloat(document.getElementById('editQtd').value) || 1;
+
+      if (!nome) return alert("Nome da bebida é obrigatório!");
+
+      salvarAcao(`Editar "${nome}"`);
+
+      if (bebidaEditandoTipo === 'estoque') {
+        bebidas.estoque[bebidaEditandoIndex] = { nome, qtd };
+      } else {
+        let preco = parseFloat(document.getElementById('editPreco').value) || 0;
+        let total = qtd * preco;
+
+        if (preco <= 0) return alert("Preço deve ser maior que 0!");
+
+        bebidas.compra[bebidaEditandoIndex] = { nome, qtd, preco, total };
+      }
+
+      desenharTabela();
+      salvarDados();
+      fecharPopup();
+    }
+
+    // REMOVER BEBIDA
+    function removerBebida(index) {
+      let nome = bebidas[abaAtual][index].nome;
+
+      if (!confirm(`Remover "${nome}"?`)) return;
+
+      salvarAcao(`Remover "${nome}"`);
+
+      bebidas[abaAtual].splice(index, 1);
+      desenharTabela();
+      salvarDados();
+    }
+
+    // BUSCAR SIMILARIDADE
+    function calcularSimilaridade(str1, str2) {
+      let s1 = str1.toLowerCase().trim();
+      let s2 = str2.toLowerCase().trim();
+
+      s1 = s1.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      s2 = s2.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+      if (s1 === s2) return 1.0;
+
+      let s1Clean = s1.replace(/[0-9,.\-l]/g, '').trim();
+      let s2Clean = s2.replace(/[0-9,.\-l]/g, '').trim();
+
+      if (s1Clean === s2Clean && s1Clean.length > 0) return 0.98;
+
+      let longer = s1.length > s2.length ? s1 : s2;
+      let shorter = s1.length > s2.length ? s2 : s1;
+
+      if (longer.length === 0) return 1.0;
+
+      let editDistance = levenshtein(longer, shorter);
+      return 1.0 - (editDistance / longer.length);
+    }
+
+    function levenshtein(a, b) {
+      let tmp;
+      if (a.length < b.length) { tmp = a; a = b; b = tmp; }
+
+      let i, j, minJ, maxJ, minCost, jPrev, tmp2;
+      let bLength = b.length;
+      let aLength = a.length;
+      let v0 = new Array(bLength + 1);
+      let v1 = new Array(bLength + 1);
+      let v2 = new Array(bLength + 1);
+
+      for (i = 0; i <= bLength; i++) v0[i] = i;
+
+      for (i = 1; i <= aLength; i++) {
+        minJ = i > 1 ? i - 2 : 0;
+        maxJ = bLength < aLength - i + 1 ? bLength : aLength - i + 1;
+
+        v1[0] = i;
+        for (j = 1; j <= bLength; j++) {
+          minCost = Math.min(v0[j] + 1, v1[j - 1] + 1);
+          if (a[i - 1] === b[j - 1]) minCost = Math.min(minCost, v0[j - 1]);
+          else minCost = Math.min(minCost, v0[j - 1] + 1);
+
+          v1[j] = minCost;
+        }
+        tmp2 = v0; v0 = v1; v1 = tmp2;
+      }
+
+      return v0[bLength];
+    }
+
+    // MOVER PARA ESTOQUE
+    function moverParaEstoque(index) {
+      let bebidaCompra = bebidas.compra[index];
+      
+      let similar = bebidas.estoque.findIndex(b => calcularSimilaridade(b.nome, bebidaCompra.nome) > 0.75);
+
+      if (similar !== -1) {
+        bebidaPendenteMover = { compraIndex: index, estoqueIndex: similar };
+        let msgSimilar = `Similar: "${bebidas.estoque[similar].nome}"\n\nJuntar "${bebidaCompra.nome}"?`;
+        document.getElementById('msgJuntar').textContent = msgSimilar;
+        abrirPopup('juntarBebida');
+      } else {
+        if (!confirm(`Marcar "${bebidaCompra.nome}" como comprado?`)) return;
+        salvarAcao(`Marcar "${bebidaCompra.nome}" como comprado`);
+        bebidas.estoque.push({ nome: bebidaCompra.nome, qtd: bebidaCompra.qtd });
+        bebidas.compra.splice(index, 1);
+        desenharTabela();
+        salvarDados();
+      }
+    }
+
+    function confirmarJuntar() {
+      let compraIdx = bebidaPendenteMover.compraIndex;
+      let estoqueIdx = bebidaPendenteMover.estoqueIndex;
+      let bebidaCompra = bebidas.compra[compraIdx];
+      let bebidaEstoque = bebidas.estoque[estoqueIdx];
+
+      salvarAcao(`Juntar "${bebidaCompra.nome}"`);
+
+      bebidaEstoque.qtd += bebidaCompra.qtd;
+      bebidas.compra.splice(compraIdx, 1);
+
+      abaAtual = 'estoque';
+      document.getElementById('abaSeletor').value = 'estoque';
+      desenharTabela();
+      salvarDados();
+      fecharPopup();
+    }
+
+    function naoJuntar() {
+      let compraIdx = bebidaPendenteMover.compraIndex;
+      let bebidaCompra = bebidas.compra[compraIdx];
+
+      salvarAcao(`Marcar "${bebidaCompra.nome}" como comprado`);
+
+      bebidas.estoque.push({ nome: bebidaCompra.nome, qtd: bebidaCompra.qtd });
+      bebidas.compra.splice(compraIdx, 1);
+
+      abaAtual = 'estoque';
+      document.getElementById('abaSeletor').value = 'estoque';
+      desenharTabela();
+      salvarDados();
+      fecharPopup();
+    }
+
+    // DESENHAR TABELA
+    function desenharTabela() {
+      let lista = bebidas[abaAtual];
+      let tbody = document.querySelector("#tabela tbody");
+      let titulo = document.getElementById('tituloLista');
+      let thead = document.getElementById('thead-estoque');
+
+      if (abaAtual === 'estoque') {
+        titulo.textContent = '📦 Estoque';
+        thead.innerHTML = `
+          <tr>
+            <th>Bebida</th>
+            <th style="width:50px;">Qtd</th>
+            <th style="width:80px;">Ação</th>
+          </tr>
+        `;
+      } else {
+        titulo.textContent = '🛒 Compras';
+        thead.innerHTML = `
+          <tr>
+            <th>Bebida</th>
+            <th style="width:40px;">Qtd</th>
+            <th style="width:55px;">Preço</th>
+            <th style="width:60px;">Total</th>
+            <th style="width:100px;">Ação</th>
+          </tr>
+        `;
+      }
+
+      tbody.innerHTML = '';
+
+      lista.forEach((bebida, index) => {
+        let row = document.createElement('tr');
+
+        if (abaAtual === 'estoque') {
+          row.innerHTML = `
+            <td>${bebida.nome}</td>
+            <td>${bebida.qtd}x</td>
+            <td style="text-align:center; white-space:nowrap;">
+              <button style="background:linear-gradient(90deg,#2196f3 0%,#64b5f6 100%); color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; font-size:12px; margin:2px; font-weight:600;" onclick="editarBebida(${index})">✏️</button>
+              <button class="trash-btn" onclick="removerBebida(${index})" style="width:28px; height:28px; line-height:28px; font-size:12px; margin:2px; padding:0;">🗑️</button>
+            </td>
+          `;
+        } else {
+          row.innerHTML = `
+            <td>${bebida.nome}</td>
+            <td>${bebida.qtd}x</td>
+            <td style="text-align:center;">R$ ${bebida.preco.toFixed(2).replace('.', ',')}</td>
+            <td style="text-align:center; font-weight:600; color:#4CAF50;">R$ ${bebida.total.toFixed(2).replace('.', ',')}</td>
+            <td style="text-align:center; white-space:nowrap;">
+              <button style="background:linear-gradient(90deg,#2196f3 0%,#64b5f6 100%); color:#fff; border:none; padding:6px 8px; border-radius:4px; cursor:pointer; font-size:11px; margin:1px; font-weight:600;" onclick="editarBebida(${index})">✏️</button>
+              <button style="background:linear-gradient(90deg,#4CAF50 0%,#45a049 100%); color:#fff; border:none; padding:6px 8px; border-radius:4px; cursor:pointer; font-size:11px; margin:1px; font-weight:600;" onclick="moverParaEstoque(${index})">✓</button>
+              <button class="trash-btn" onclick="removerBebida(${index})" style="width:28px; height:28px; line-height:28px; font-size:12px; margin:1px; padding:0;">🗑️</button>
+            </td>
+          `;
+        }
+        tbody.appendChild(row);
+      });
+
+      console.log("Tabela desenhada. Dados:", bebidas[abaAtual]);
+    }
+
+    // DADOS (localStorage)
+    function salvarDados() {
+      localStorage.setItem('gerenciadorBebidas', JSON.stringify(bebidas));
+      console.log("Dados salvos no localStorage");
+    }
+
+    function carregarDados() {
+      try {
+        let dados = localStorage.getItem('gerenciadorBebidas');
+        if (dados) {
+          bebidas = JSON.parse(dados);
+          console.log("Dados carregados:", bebidas);
+        } else {
+          bebidas = { estoque: [], compra: [] };
+          console.log("Nenhum dado anterior encontrado, iniciando novo");
+        }
+      } catch (e) {
+        console.error("Erro ao carregar dados:", e);
+        bebidas = { estoque: [], compra: [] };
+      }
+    }
+
+    // EXPORTAR/IMPORTAR
+    function exportarDados() {
+      if (!confirm("Deseja exportar os dados?")) return;
+
+      let blob = new Blob([JSON.stringify(bebidas, null, 2)], { type: "application/json" });
+      let link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `bebidas-${new Date().toISOString().split('T')[0]}.json`;
+      link.click();
+    }
+
+    function importarDados(e) {
+      let file = e.target.files[0];
+      if (!file) return;
+
+      let reader = new FileReader();
+      reader.onload = () => {
+        try {
+          let dados = JSON.parse(reader.result);
+          if (!dados.estoque || !dados.compra) throw "Formato inválido";
+
+          salvarAcao("Importar dados");
+
+          bebidas = dados;
+          desenharTabela();
+          salvarDados();
+          alert("Dados importados!");
+        } catch {
+          alert("Erro ao importar.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // PNG
+    function exportarPNG() {
+      let lista = bebidas[abaAtual];
+      if (lista.length === 0) return alert("A lista está vazia!");
+
+      let chunkSize = 15;
+      let chunks = [];
+      for (let i = 0; i < lista.length; i += chunkSize) {
+        chunks.push(lista.slice(i, i + chunkSize));
+      }
+
+      let baixarProximo = (idx) => {
+        if (idx >= chunks.length) return;
+
+        let tbody = document.querySelector("#tabela tbody");
+        let origHTML = tbody.innerHTML;
+
+        tbody.innerHTML = '';
+        let thead = document.querySelector("#tabela thead");
+        let headerHTML = abaAtual === 'estoque' ? 
+          `<th style="text-align:left;">Bebida</th><th style="width:50px;">Qtd</th>` :
+          `<th style="text-align:left;">Bebida</th><th style="width:40px;">Qtd</th>`;
+
+        thead.innerHTML = `<tr>${headerHTML}</tr>`;
+
+        chunks[idx].forEach((bebida) => {
+          let row = document.createElement('tr');
+          if (abaAtual === 'estoque') {
+            row.innerHTML = `
+              <td>${bebida.nome}</td>
+              <td>${bebida.qtd}x</td>
+            `;
+          } else {
+            row.innerHTML = `
+              <td>${bebida.nome}</td>
+              <td>${bebida.qtd}x</td>
+            `;
+          }
+          tbody.appendChild(row);
+        });
+
+        setTimeout(() => {
+          html2canvas(document.getElementById('tabela'), {
+            scale: 3,
+            backgroundColor: '#1e1e1e',
+            useCORS: true
+          }).then(canvas => {
+            let link = document.createElement('a');
+            let n = idx + 1;
+            let total = chunks.length;
+            link.download = `bebidas-${abaAtual}-${n}de${total}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+
+            baixarProximo(idx + 1);
+          }).catch(() => {
+            tbody.innerHTML = origHTML;
+            alert("Erro ao gerar PNG " + (idx + 1));
+          });
+        }, 300);
+      };
+
+      baixarProximo(0);
+
+      setTimeout(() => {
+        desenharTabela();
+      }, chunks.length * 400);
+    }
+
+    // PDF
+    function exportarPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const margin = 8;
+      let yPosition = margin;
+
+      doc.setFont("Arial", "bold");
+      doc.setFontSize(16);
+      let titulo = abaAtual === 'estoque' ? 'Estoque' : 'Compras';
+      doc.text(titulo, margin, yPosition);
+      yPosition += 10;
+
+      doc.setFont("Arial", "normal");
+      doc.setFontSize(9);
+      doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, margin, yPosition);
+      yPosition += 8;
+
+      doc.setFont("Arial", "bold");
+      doc.setFontSize(10);
+      doc.setFillColor(41, 128, 185);
+      doc.setTextColor(255, 255, 255);
+      doc.rect(margin, yPosition, pageWidth - 2 * margin, 6, 'F');
+      doc.text("Bebida", margin + 2, yPosition + 4);
+      doc.text("Qtd", margin + 80, yPosition + 4);
+      if (abaAtual === 'compra') {
+        doc.text("Preço", margin + 100, yPosition + 4);
+        doc.text("Total", margin + 130, yPosition + 4);
+      }
+      yPosition += 8;
+
+      doc.setFont("Arial", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(0, 0, 0);
+
+      bebidas[abaAtual].forEach(bebida => {
+        if (yPosition > pageHeight - 10) {
+          doc.addPage();
+          yPosition = margin;
+        }
+        doc.text(bebida.nome, margin + 2, yPosition);
+        doc.text(bebida.qtd + 'x', margin + 80, yPosition);
+        if (abaAtual === 'compra') {
+          doc.text('R$ ' + bebida.preco.toFixed(2).replace('.', ','), margin + 100, yPosition);
+          doc.text('R$ ' + bebida.total.toFixed(2).replace('.', ','), margin + 130, yPosition);
+        }
+        yPosition += 5;
+      });
+
+      doc.save(`bebidas-${abaAtual}-${new Date().toISOString().split('T')[0]}.pdf`);
+    }
+
+    // APAGAR TUDO
+    function apagarTudo() {
+      if (!confirm("Apagar tudo?")) return;
+      if (!confirm("Tem certeza? Não pode desfazer!")) return;
+
+      bebidas = { estoque: [], compra: [] };
+      historicoAcoes = [];
+      desenharTabela();
+      salvarDados();
+      atualizarBtnUndo();
+    }
+  </script>
 </body>
-
 </html>
